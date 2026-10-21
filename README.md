@@ -1,5 +1,6 @@
 # shimebi（締め日）
 
+[![CI](https://github.com/makumaaku/shimebi/actions/workflows/ci.yml/badge.svg)](https://github.com/makumaaku/shimebi/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 「**月末締め翌月末払い**」「**20日締め翌月10日払い**」といった日本の支払条件から、**締め日**と**支払期日**を計算する TypeScript ライブラリ & CLI です。支払日が土日祝や銀行休業日（12/31〜1/3）に当たる場合の前営業日・翌営業日への調整もできます。
