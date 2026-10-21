@@ -1,6 +1,6 @@
 {
   "name": "shimebi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "「月末締め翌月末払い」のような日本の支払条件から、締め日・支払期日（土日祝・銀行休業日調整つき）を計算する依存ゼロのTypeScriptライブラリ & CLI",
   "keywords": [
     "japan",

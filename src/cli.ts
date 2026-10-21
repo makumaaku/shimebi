@@ -1,5 +1,8 @@
 #!/usr/bin/env node
+import { createRequire } from "node:module";
 import { formatPaymentTerms, listPaymentSchedules, parsePaymentTerms, type HolidayAdjustment, type CalendarType } from "./index.js";
+
+const { version } = createRequire(import.meta.url)("../package.json") as { version: string };
 
 const HELP = `shimebi — 締め日・支払期日を計算する
 
@@ -17,8 +20,27 @@ const HELP = `shimebi — 締め日・支払期日を計算する
   -a, --adjust <mode>   休業日の調整: previous | next | modifiedNext | none (デフォルト: previous)
   -c, --calendar <type> 休業日カレンダー: bank | national | weekdays (デフォルト: bank)
       --json            JSONで出力
+  -v, --version         バージョンを表示
   -h, --help            ヘルプ
 `;
+
+const ADJUSTMENTS: readonly HolidayAdjustment[] = ["previous", "next", "modifiedNext", "none"];
+const CALENDARS: readonly CalendarType[] = ["bank", "national", "weekdays"];
+
+class UsageError extends Error {}
+
+function oneOf<T extends string>(option: string, value: string | undefined, allowed: readonly T[]): T {
+  if (value === undefined || !(allowed as readonly string[]).includes(value)) {
+    throw new UsageError(`${option} には ${allowed.join(" | ")} のいずれかを指定してください (指定値: ${value ?? "なし"})`);
+  }
+  return value as T;
+}
+
+function positiveInt(option: string, value: string | undefined): number {
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 1) throw new UsageError(`${option} には1以上の整数を指定してください (指定値: ${value ?? "なし"})`);
+  return n;
+}
 
 const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
 const dow = (s: string) => WEEK[new Date(`${s}T00:00:00Z`).getUTCDay()];
@@ -34,10 +56,14 @@ function main(argv: string[]): number {
     if (a === "-h" || a === "--help") {
       process.stdout.write(HELP);
       return 0;
-    } else if (a === "-n" || a === "--count") count = Number(argv[++i]);
-    else if (a === "-a" || a === "--adjust") adjustment = argv[++i] as HolidayAdjustment;
-    else if (a === "-c" || a === "--calendar") calendar = argv[++i] as CalendarType;
+    } else if (a === "-v" || a === "--version") {
+      process.stdout.write(`${version}\n`);
+      return 0;
+    } else if (a === "-n" || a === "--count") count = positiveInt(a, argv[++i]);
+    else if (a === "-a" || a === "--adjust") adjustment = oneOf(a, argv[++i], ADJUSTMENTS);
+    else if (a === "-c" || a === "--calendar") calendar = oneOf(a, argv[++i], CALENDARS);
     else if (a === "--json") json = true;
+    else if (a.startsWith("-") && a.length > 1 && !/^-\d/.test(a)) throw new UsageError(`不明なオプション: ${a}`);
     else positional.push(a);
   }
   if (positional.length === 0) {
@@ -47,7 +73,7 @@ function main(argv: string[]): number {
   const [termsText, dateText] = positional as [string, string | undefined];
   const terms = parsePaymentTerms(termsText);
   const from = dateText ?? new Date();
-  const rows = listPaymentSchedules(from, Number.isFinite(count) && count > 0 ? count : 1, terms, { adjustment, calendar });
+  const rows = listPaymentSchedules(from, count, terms, { adjustment, calendar });
 
   if (json) {
     process.stdout.write(`${JSON.stringify({ terms, label: formatPaymentTerms(terms), schedules: rows }, null, 2)}\n`);
@@ -67,5 +93,6 @@ try {
   process.exitCode = main(process.argv.slice(2));
 } catch (e) {
   process.stderr.write(`error: ${(e as Error).message}\n`);
+  if (e instanceof UsageError) process.stderr.write("使い方は shimebi --help を参照してください\n");
   process.exitCode = 1;
 }

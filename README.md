@@ -132,7 +132,7 @@ npx shimebi 月末締め翌月末払い 2026-10-01 -n 4
 対象期間 2027-01-01 〜 2027-01-31(日)  →  支払期日 2027-02-26(金)  (本来 2027-02-28(日) が休業日のため調整)
 ```
 
-オプション: `-n/--count`、`-a/--adjust previous|next|modifiedNext|none`、`-c/--calendar bank|national|weekdays`、`--json`
+オプション: `-n/--count`、`-a/--adjust previous|next|modifiedNext|none`、`-c/--calendar bank|national|weekdays`、`--json`、`-v/--version`
 
 ## 仕様
 
