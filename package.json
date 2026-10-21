@@ -1,0 +1,67 @@
+{
+  "name": "shimebi",
+  "version": "0.1.0",
+  "description": "「月末締め翌月末払い」のような日本の支払条件から、締め日・支払期日（土日祝・銀行休業日調整つき）を計算する依存ゼロのTypeScriptライブラリ & CLI",
+  "keywords": [
+    "japan",
+    "japanese",
+    "payment-terms",
+    "invoice",
+    "due-date",
+    "business-day",
+    "holiday",
+    "締め日",
+    "支払日",
+    "支払期日",
+    "請求書",
+    "祝日",
+    "営業日"
+  ],
+  "license": "MIT",
+  "author": "Maaku Saito (Boring LLC)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makumaaku/shimebi.git"
+  },
+  "homepage": "https://github.com/makumaaku/shimebi#readme",
+  "bugs": "https://github.com/makumaaku/shimebi/issues",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "bin": {
+    "shimebi": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@holiday-jp/holiday_jp": "^2.4.0",
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
