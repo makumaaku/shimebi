@@ -42,6 +42,23 @@ export function parsePaymentTerms(text: string): PaymentTerms {
   return terms;
 }
 
+/**
+ * parsePaymentTerms の例外を投げない版。解釈できなければ undefined を返す
+ * （フォーム入力のバリデーションなど向け）
+ *
+ * @example
+ * tryParsePaymentTerms("月末締め翌月末払い") // { closingDay: "end", monthOffset: 1, paymentDay: "end" }
+ * tryParsePaymentTerms("なるはやで")         // undefined
+ */
+export function tryParsePaymentTerms(text: string): PaymentTerms | undefined {
+  try {
+    return parsePaymentTerms(text);
+  } catch (e) {
+    if (e instanceof SyntaxError) return undefined;
+    throw e;
+  }
+}
+
 /** PaymentTerms を「20日締め翌月10日払い」形式の文字列にする */
 export function formatPaymentTerms(terms: Pick<PaymentTerms, "closingDay" | "monthOffset" | "paymentDay">): string {
   const closing = terms.closingDay === "end" || terms.closingDay >= 31 ? "月末" : `${terms.closingDay}日`;

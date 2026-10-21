@@ -78,10 +78,12 @@ getPaymentDate("2026-10-21", {
 ### 文字列のパースと整形
 
 ```ts
-import { parsePaymentTerms, formatPaymentTerms } from "shimebi";
+import { parsePaymentTerms, tryParsePaymentTerms, formatPaymentTerms } from "shimebi";
 
 parsePaymentTerms("１５日〆、翌々月５日支払");
 // => { closingDay: 15, monthOffset: 2, paymentDay: 5 }
+
+tryParsePaymentTerms("なるはやで"); // => undefined（例外を投げない。入力チェック向け）
 
 formatPaymentTerms({ closingDay: "end", monthOffset: 1, paymentDay: "end" });
 // => "月末締め翌月末払い"
@@ -168,6 +170,14 @@ npx shimebi 月末締め翌月末払い 2026-10-01 -n 4
 - **支払日**: 締め日の月から `monthOffset` か月後の `paymentDay`。支払日が締め日より前になる条件（例: `25日締め当月10日払い`）はエラーになります。
 - **日付の入出力**: 入力は `"YYYY-MM-DD"` 文字列または `Date`（ローカル日付として解釈）。出力は常に `"YYYY-MM-DD"` 文字列なので、タイムゾーンのずれは起きません。
 - **祝日**: 2000〜2099年に対応。2000〜2050年は [holiday_jp](https://github.com/holiday-jp/holiday_jp) のデータと一致することをテストで確認しています。春分・秋分の日は計算式で出しているため、将来の官報公示と違う年があれば `extraHolidays` / `excludeHolidays` で補正してください。祝日法が改正された場合はライブラリの更新で対応します。
+
+## バージョン方針
+
+1.0.0 から [Semantic Versioning](https://semver.org/lang/ja/) に従います。
+
+- **安定版として保証する範囲**: `shimebi` からエクスポートしている関数・型と、その戻り値の形、CLI のオプションと `--json` / `--csv` / `--ics` の出力形式。
+- **メジャー以外でも変わりうるもの**: テキスト出力の文言、エラーメッセージの文言、祝日法改正に伴う祝日データ。
+- 変更履歴は [CHANGELOG.md](./CHANGELOG.md) を参照してください。
 
 ## English
 

@@ -10,7 +10,7 @@ export {
   type DayOfMonth,
   type HolidayAdjustment,
 } from "./terms.js";
-export { parsePaymentTerms, formatPaymentTerms } from "./parse.js";
+export { parsePaymentTerms, tryParsePaymentTerms, formatPaymentTerms } from "./parse.js";
 export {
   isBusinessDay,
   addBusinessDays,

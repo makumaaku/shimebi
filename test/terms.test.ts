@@ -8,6 +8,7 @@ import {
   isBusinessDay,
   listPaymentSchedules,
   parsePaymentTerms,
+  tryParsePaymentTerms,
 } from "../src/index.js";
 
 describe("parsePaymentTerms", () => {
@@ -30,6 +31,12 @@ describe("parsePaymentTerms", () => {
   it("throws on unknown text", () => {
     expect(() => parsePaymentTerms("なるはやで払う")).toThrow(SyntaxError);
     expect(() => parsePaymentTerms("0日締め翌月末払い")).toThrow(SyntaxError);
+  });
+
+  it("tryParsePaymentTerms は例外を投げず undefined を返す", () => {
+    expect(tryParsePaymentTerms("20日締め翌月10日払い")).toEqual({ closingDay: 20, monthOffset: 1, paymentDay: 10 });
+    expect(tryParsePaymentTerms("なるはやで払う")).toBeUndefined();
+    expect(tryParsePaymentTerms("0日締め翌月末払い")).toBeUndefined();
   });
 
   it("formats back to text", () => {
