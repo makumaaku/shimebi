@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createRequire } from "node:module";
-import { formatPaymentTerms, listPaymentSchedules, parsePaymentTerms, type HolidayAdjustment, type CalendarType } from "./index.js";
+import { formatPaymentTerms, listPaymentSchedules, parsePaymentTerms, toCSV, type HolidayAdjustment, type CalendarType } from "./index.js";
 
 const { version } = createRequire(import.meta.url)("../package.json") as { version: string };
 
@@ -14,12 +14,14 @@ const HELP = `shimebi — 締め日・支払期日を計算する
   shimebi 20日締め翌月10日払い 2026-12-25
   shimebi 月末締め翌月末払い 2026-10-01 --count 6
   shimebi 15日締め翌月15日払い --adjust next --calendar national --json
+  shimebi 月末締め翌月末払い 2026-04-01 -n 12 --csv > 支払予定.csv
 
 オプション:
   -n, --count <n>       何期間分を表示するか (デフォルト: 1)
   -a, --adjust <mode>   休業日の調整: previous | next | modifiedNext | none (デフォルト: previous)
   -c, --calendar <type> 休業日カレンダー: bank | national | weekdays (デフォルト: bank)
       --json            JSONで出力
+      --csv             CSVで出力（日本語見出し）
   -v, --version         バージョンを表示
   -h, --help            ヘルプ
 `;
@@ -51,6 +53,7 @@ function main(argv: string[]): number {
   let adjustment: HolidayAdjustment | undefined;
   let calendar: CalendarType | undefined;
   let json = false;
+  let csv = false;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
     if (a === "-h" || a === "--help") {
@@ -63,9 +66,11 @@ function main(argv: string[]): number {
     else if (a === "-a" || a === "--adjust") adjustment = oneOf(a, argv[++i], ADJUSTMENTS);
     else if (a === "-c" || a === "--calendar") calendar = oneOf(a, argv[++i], CALENDARS);
     else if (a === "--json") json = true;
+    else if (a === "--csv") csv = true;
     else if (a.startsWith("-") && a.length > 1 && !/^-\d/.test(a)) throw new UsageError(`不明なオプション: ${a}`);
     else positional.push(a);
   }
+  if (json && csv) throw new UsageError("--json と --csv は同時に指定できません");
   if (positional.length === 0) {
     process.stderr.write(HELP);
     return 1;
@@ -77,6 +82,10 @@ function main(argv: string[]): number {
 
   if (json) {
     process.stdout.write(`${JSON.stringify({ terms, label: formatPaymentTerms(terms), schedules: rows }, null, 2)}\n`);
+    return 0;
+  }
+  if (csv) {
+    process.stdout.write(toCSV(rows, { header: "ja" }));
     return 0;
   }
   process.stdout.write(`支払条件: ${formatPaymentTerms(terms)}\n\n`);

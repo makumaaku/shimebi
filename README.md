@@ -106,6 +106,19 @@ listPaymentSchedules("2026-10-01", 3, "月末締め翌月末払い");
 // ]
 ```
 
+### CSV に書き出す
+
+```ts
+import { listPaymentSchedules, toCSV } from "shimebi";
+
+toCSV(listPaymentSchedules("2026-10-01", 3, "月末締め翌月末払い"), { header: "ja", bom: true });
+// 対象期間開始,締め日,支払予定日,支払期日,休業日調整
+// 2026-10-01,2026-10-31,2026-11-30,2026-11-30,false
+// ...
+```
+
+`header` は `"en"`（デフォルト）/ `"ja"` / `false`、`bom: true` で Excel でも文字化けしない UTF-8 BOM を付けます。
+
 ### 営業日・祝日のユーティリティ
 
 ```ts
@@ -132,7 +145,7 @@ npx shimebi 月末締め翌月末払い 2026-10-01 -n 4
 対象期間 2027-01-01 〜 2027-01-31(日)  →  支払期日 2027-02-26(金)  (本来 2027-02-28(日) が休業日のため調整)
 ```
 
-オプション: `-n/--count`、`-a/--adjust previous|next|modifiedNext|none`、`-c/--calendar bank|national|weekdays`、`--json`、`-v/--version`
+オプション: `-n/--count`、`-a/--adjust previous|next|modifiedNext|none`、`-c/--calendar bank|national|weekdays`、`--json`、`--csv`、`-v/--version`
 
 ## 仕様
 
