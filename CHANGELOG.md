@@ -2,6 +2,17 @@
 
 このプロジェクトの主な変更点を記録します。形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に、バージョン番号は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [0.4.0] - 2026-10-21
+
+### Added
+
+- `toICalendar()`: 支払スケジュールを iCalendar（.ics）形式にする。支払期日を終日予定として Google カレンダーや Outlook に取り込める
+- CLI: `--ics` で iCalendar を出力
+
+### Changed
+
+- CLI: `--json` / `--csv` / `--ics` は排他指定。複数指定するとエラーになる
+
 ## [0.3.0] - 2026-10-21
 
 ### Added
@@ -28,6 +39,7 @@
 
 - 初回リリース。支払条件文字列のパース、締め日・支払期日の計算、休業日調整、日本の祝日計算、CLI
 
+[0.4.0]: https://github.com/makumaaku/shimebi/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/makumaaku/shimebi/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/makumaaku/shimebi/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/makumaaku/shimebi/releases/tag/v0.1.0

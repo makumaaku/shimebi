@@ -20,4 +20,4 @@ export {
   type CalendarOptions,
 } from "./calendar.js";
 export { holidaysOf, getHolidayName, isNationalHoliday } from "./holidays.js";
-export { toCSV, type CsvOptions } from "./export.js";
+export { toCSV, toICalendar, type CsvOptions, type ICalendarOptions } from "./export.js";

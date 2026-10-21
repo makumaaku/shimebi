@@ -119,6 +119,20 @@ toCSV(listPaymentSchedules("2026-10-01", 3, "月末締め翌月末払い"), { he
 
 `header` は `"en"`（デフォルト）/ `"ja"` / `false`、`bom: true` で Excel でも文字化けしない UTF-8 BOM を付けます。
 
+### カレンダーに登録する（iCalendar）
+
+```ts
+import { listPaymentSchedules, toICalendar } from "shimebi";
+
+const ics = toICalendar(listPaymentSchedules("2026-10-01", 12, "月末締め翌月末払い"), {
+  label: "月末締め翌月末払い",
+  calendarName: "取引先A 支払期日",
+});
+// 支払期日ごとの終日予定。.ics として保存して Google カレンダーや Outlook にインポートできます
+```
+
+CLI なら `npx shimebi 月末締め翌月末払い -n 12 --ics > 支払期日.ics` で同じファイルが作れます。
+
 ### 営業日・祝日のユーティリティ
 
 ```ts
@@ -145,7 +159,7 @@ npx shimebi 月末締め翌月末払い 2026-10-01 -n 4
 対象期間 2027-01-01 〜 2027-01-31(日)  →  支払期日 2027-02-26(金)  (本来 2027-02-28(日) が休業日のため調整)
 ```
 
-オプション: `-n/--count`、`-a/--adjust previous|next|modifiedNext|none`、`-c/--calendar bank|national|weekdays`、`--json`、`--csv`、`-v/--version`
+オプション: `-n/--count`、`-a/--adjust previous|next|modifiedNext|none`、`-c/--calendar bank|national|weekdays`、`--json`、`--csv`、`--ics`、`-v/--version`
 
 ## 仕様
 
