@@ -53,6 +53,13 @@ describe("toICalendar", () => {
     for (const l of lines) expect(enc.encode(l).length).toBeLessThanOrEqual(75);
   });
 
+  it("CR / LF / CRLF はすべて \\n にエスケープし、行を分割させない", () => {
+    const out = toICalendar(rows.slice(0, 1), { summary: "a\rBEGIN:VALARM", calendarName: "x\r\ny\nz", now });
+    expect(out).toContain("SUMMARY:a\\nBEGIN:VALARM（2026-10-31 締め分）");
+    expect(out).toContain("X-WR-CALNAME:x\\ny\\nz");
+    expect(out.replace(/\r\n/g, "")).not.toMatch(/[\r\n]/);
+  });
+
   it("テキストのエスケープ", () => {
     const out = toICalendar(rows.slice(0, 1), { summary: "A社, B社; 支払", now });
     expect(out).toContain("SUMMARY:A社\\, B社\\; 支払（2026-10-31 締め分）");

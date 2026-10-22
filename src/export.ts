@@ -48,7 +48,7 @@ export interface ICalendarOptions {
 const ymd = (s: string) => s.replace(/-/g, "");
 
 function escapeText(s: string): string {
-  return s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  return s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r\n|\r|\n/g, "\\n");
 }
 
 /** RFC 5545 の行折り返し（1行75オクテット以内。マルチバイト文字の途中では切らない） */
